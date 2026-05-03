@@ -2,8 +2,14 @@
 
 # ABIDES: Agent-Based Interactive Discrete Event Simulation environment
 
+> **Course note:** this is the Politecnico fork used for part 3, *Build and
+> Battle Your Trading Agent*, of the algorithmic trading course. If you are a
+> student, jump straight to **[Quickstart for Students](#quickstart-for-students)**
+> below — it gives you a working environment in three commands on Mac or Windows.
+
 <!-- TABLE OF CONTENTS -->
 <ol>
+  <li><a href="#quickstart-for-students">Quickstart for Students</a></li>
   <li>
     <a href="#about-the-project">About The Project</a>
   </li>
@@ -27,6 +33,98 @@
   <li><a href="#license">License</a></li>
   <li><a href="#acknowledgments">Acknowledgments</a></li>
 </ol>
+
+<!-- QUICKSTART -->
+## Quickstart for Students
+
+The lab runs inside a Docker container, so the environment is identical on
+Intel Macs, Apple Silicon Macs, and Windows. You install Docker once, then
+everything else lives inside the container.
+
+### Prerequisites
+
+1. **Docker Desktop** — install from <https://www.docker.com/products/docker-desktop/>
+   and make sure it is running before you continue.
+   - **Windows**: Docker Desktop needs WSL2 or Hyper-V. If you get a
+     virtualisation error, enable virtualisation in the BIOS or ask the
+     teaching team for a Codespaces invite.
+   - **Apple Silicon**: the image builds natively on arm64 — no Rosetta needed.
+2. **Git** — most laptops already have it. Windows users without Git can use
+   <https://gitforwindows.org/>.
+3. **(Recommended) VS Code** with the *Dev Containers* extension. Optional but
+   gives you a one-click experience.
+
+### Three commands
+
+```bash
+git clone <this-repo-url> abides-polimi
+cd abides-polimi
+make build && make smoke
+```
+
+`make build` builds the Docker image (5–10 minutes the first time, cached
+after). `make smoke` runs a 5-minute RMSC04 simulation and confirms the
+environment is healthy. If you see `[smoke] OK …  environment looks healthy.`
+you are good to go.
+
+### Day-to-day
+
+| Task                                  | Command         |
+| ------------------------------------- | --------------- |
+| Start JupyterLab on `localhost:8888`  | `make up`       |
+| Stop the container                    | `make down`     |
+| Drop into a shell inside the container| `make shell`    |
+| Run the unit tests                    | `make test`     |
+| Run the smoke test                    | `make smoke`    |
+| Full reset (rebuild image)            | `make clean && make build` |
+
+The whole project source is bind-mounted into the container, so editing files
+on your host (in VS Code, PyCharm, anything) is picked up immediately by the
+running container — no rebuild needed.
+
+### VS Code one-click flow
+
+1. Open the cloned repo folder in VS Code.
+2. When prompted, choose **Reopen in Container** (or run *Dev Containers:
+   Reopen in Container* from the command palette).
+3. VS Code builds the image, mounts the source, installs the recommended
+   Python and Jupyter extensions inside the container, and drops you into a
+   terminal where `python`, `pytest`, and `make smoke` all work.
+
+### Troubleshooting
+
+| Symptom                                                    | Fix |
+| ---------------------------------------------------------- | --- |
+| `Cannot connect to the Docker daemon`                      | Start Docker Desktop and wait for the whale icon to settle. |
+| `port is already allocated` on 8888                        | Something else is using 8888. Stop it, or edit the port in `docker-compose.yml`. |
+| Build is extremely slow on Windows                         | Clone the repo *outside* `OneDrive` and `Documents`. OneDrive sync interferes with Docker volume I/O. |
+| `make: command not found` on Windows                       | Install GNU make (`winget install GnuWin32.Make`), or run the underlying `docker compose ...` commands directly — see each `Makefile` recipe. |
+| `permission denied` on `student_work/` (Linux hosts only)  | `sudo chown -R $USER student_work/`. Mac and Windows are unaffected. |
+| Apple Silicon build pulls a long time on `pomegranate`     | Expected on first build (no arm64 wheel). Subsequent builds use the cached layer. |
+
+### Dependency management
+
+Each sub-package (`abides-core`, `abides-markets`, `abides-gym`) declares its
+own runtime dependencies in `setup.cfg` (the `install_requires` block). Top-level
+classroom extras (JupyterLab, matplotlib) live in `requirements.in`. Dev tooling
+(pytest, mypy, sphinx, pip-tools) lives in `requirements-dev.in`.
+
+For reproducibility, a fully-pinned `requirements.lock` is generated from the
+three sources (`requirements.in`, `requirements-dev.in`, and the three
+sub-package `setup.cfg` files). The Docker build prefers the lockfile when it
+exists; if not, it falls back to the looser `.in` files.
+
+To regenerate the lockfile after changing any dependency:
+
+```bash
+make lock     # runs pip-compile inside the container
+git diff requirements.lock      # review
+git add requirements.lock && git commit
+```
+
+Students who only consume the project never need to run `make lock` — they get
+the committed lockfile via `git pull` and `make build` will install from it.
+
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -77,19 +175,22 @@ or by using the following BibTeX:
 ## Getting Started
 ### Installation
 
-1. Download the ABIDES source code, either directly from GitHub or with git:
+For students taking the course, follow the
+**[Quickstart for Students](#quickstart-for-students)** above — it uses
+Docker and works identically on Mac and Windows.
 
-    ```bash
-    git clone https://github.com/jpmorganchase/abides-jpmc-public
-    ```
+If you specifically need a host install (e.g. you are extending ABIDES outside
+the course), the legacy path is:
 
-    **Note:** The latest stable version is contained within the `main` branch.
+```bash
+git clone <this-repo-url>
+cd abides-polimi
+sh install.sh                    # editable: sh setup-dev.sh
+```
 
-2. Run the install script to install the ABIDES packages and their dependencies:
-
-    ```
-    sh install.sh
-    ```
+The legacy path requires Python 3.9 and a working build toolchain (Xcode CLT
+on macOS, MSVC build tools on Windows) for `numba`, `llvmlite`, and
+`pomegranate`. The Docker path avoids all of that.
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
