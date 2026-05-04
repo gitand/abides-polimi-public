@@ -41,33 +41,25 @@ The lab runs inside a Docker container, so the environment is identical on
 Intel Macs, Apple Silicon Macs, and Windows. You install Docker once, then
 everything else lives inside the container.
 
-### Prerequisites
+**For first-time setup, follow the step-by-step guide for your OS:**
 
-1. **Docker Desktop** — install from <https://www.docker.com/products/docker-desktop/>
-   and make sure it is running before you continue.
-   - **Windows**: Docker Desktop needs WSL2 or Hyper-V. If you get a
-     virtualisation error, enable virtualisation in the BIOS or ask the
-     teaching team for a Codespaces invite.
-   - **Apple Silicon**: the image builds natively on arm64 — no Rosetta needed.
-2. **Git** — most laptops already have it. Windows users without Git can use
-   <https://gitforwindows.org/>.
-3. **(Recommended) VS Code** with the *Dev Containers* extension. Optional but
-   gives you a one-click experience.
+- 🪟 **Windows** — [docs/SETUP_WINDOWS.md](docs/SETUP_WINDOWS.md)
+- 🍎 **macOS** (Intel and Apple Silicon) — [docs/SETUP_MACOS.md](docs/SETUP_MACOS.md)
 
-### Three commands
+Once you've installed the prerequisites (Docker Desktop, Git, optionally
+VS Code with the *Dev Containers* extension), the day-to-day flow is:
 
 ```bash
 git clone <this-repo-url> abides-polimi
 cd abides-polimi
-make build && make smoke
+make build && make smoke    # one-time build + verification
 ```
 
 `make build` builds the Docker image (5–10 minutes the first time, cached
 after). `make smoke` runs a 5-minute RMSC04 simulation and confirms the
-environment is healthy. If you see `[smoke] OK …  environment looks healthy.`
-you are good to go.
+environment is healthy — look for `[smoke] OK … environment looks healthy.`
 
-### Day-to-day
+### Day-to-day commands
 
 | Task                                  | Command         |
 | ------------------------------------- | --------------- |
@@ -91,16 +83,7 @@ running container — no rebuild needed.
    Python and Jupyter extensions inside the container, and drops you into a
    terminal where `python`, `pytest`, and `make smoke` all work.
 
-### Troubleshooting
-
-| Symptom                                                    | Fix |
-| ---------------------------------------------------------- | --- |
-| `Cannot connect to the Docker daemon`                      | Start Docker Desktop and wait for the whale icon to settle. |
-| `port is already allocated` on 8888                        | Something else is using 8888. Stop it, or edit the port in `docker-compose.yml`. |
-| Build is extremely slow on Windows                         | Clone the repo *outside* `OneDrive` and `Documents`. OneDrive sync interferes with Docker volume I/O. |
-| `make: command not found` on Windows                       | Install GNU make (`winget install GnuWin32.Make`), or run the underlying `docker compose ...` commands directly — see each `Makefile` recipe. |
-| `permission denied` on `student_work/` (Linux hosts only)  | `sudo chown -R $USER student_work/`. Mac and Windows are unaffected. |
-| Apple Silicon build pulls a long time on `pomegranate`     | Expected on first build (no arm64 wheel). Subsequent builds use the cached layer. |
+For OS-specific troubleshooting, see the per-OS setup guide linked above.
 
 ### Dependency management
 
