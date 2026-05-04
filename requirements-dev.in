@@ -23,5 +23,6 @@ sphinx >= 7.0, < 8.0
 sphinx-autodoc-typehints >= 2.0
 sphinx-book-theme >= 1.1
 
-# --- Lockfile generation ---
-pip-tools >= 7.4
+# Note: lockfile generation uses `uv pip compile`, which is provided by the
+# `uv` binary copied into the image directly from ghcr.io/astral-sh/uv. No
+# Python-level pip-tools dependency needed.

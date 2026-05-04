@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools >= 64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "abides-core"
+version = "0.1.0"
+description = "ABIDES: Agent-Based Interactive Discrete Event Simulation environment — core simulator."
+readme = "README.md"
+license = { text = "BSD-3-Clause" }
+requires-python = ">=3.9"
+dependencies = [
+    "numpy >= 1.23, < 2.0",
+    "pandas >= 1.5, < 3.0",
+    "coloredlogs >= 15.0",
+    # Used by the abides CLI for coloured error output.
+    "termcolor >= 2.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/tuckerbalch/jpmc-abides"
+
+# Entry point: `abides path/to/config.py` after a normal pip install.
+[project.scripts]
+abides = "abides_core.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["abides_core*"]

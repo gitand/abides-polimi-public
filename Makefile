@@ -51,13 +51,11 @@ smoke:  ## Run the 5-minute RMSC04 smoke test inside the container.
 	$(DC) run --rm abides python tools/smoke_test.py
 
 lock:  ## Regenerate requirements.lock from the *.in files. Commit the result.
-	$(DC) run --rm abides bash -c "\
-		pip-compile \
+	$(DC) run --rm abides \
+		uv pip compile \
 			--quiet \
-			--strip-extras \
-			--resolver=backtracking \
 			--output-file=requirements.lock \
-			requirements.in requirements-dev.in"
+			requirements.in requirements-dev.in
 	@echo "requirements.lock regenerated. Review the diff and commit it."
 
 clean:  ## Remove image and dangling containers (full reset).

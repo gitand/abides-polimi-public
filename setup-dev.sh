@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Legacy host-install path for ABIDES contributors who want an editable install
-# without Docker. See the "Quickstart for Students" section of the README for
-# the supported (Docker) flow.
+# Legacy host-install path for ABIDES contributors who want an editable
+# install without Docker. See the "Quickstart for Students" section of the
+# README for the supported (Docker) flow.
 set -euo pipefail
 
 python -m pip install --upgrade pip setuptools wheel

@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools >= 64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "abides-markets"
+version = "0.1.0"
+description = "ABIDES: financial-markets extensions on top of abides-core."
+readme = "README.md"
+license = { text = "BSD-3-Clause" }
+requires-python = ">=3.9"
+dependencies = [
+    # Sibling local package — installed first by the Dockerfile / install.sh,
+    # so pip sees the requirement as already satisfied.
+    "abides-core",
+    "numpy >= 1.23, < 2.0",
+    "pandas >= 1.5, < 3.0",
+    "scipy >= 1.10",
+    "gym >= 0.26",
+    # pomegranate 1.x is a complete rewrite with a different API; pin to the
+    # legacy 0.x line that ABIDES was written against.
+    "pomegranate >= 0.14, < 1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/tuckerbalch/jpmc-abides"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["abides_markets*"]

@@ -5,7 +5,7 @@
 # install.
 #
 # Requirements:
-#   - Python 3.9 (other 3.x versions may work but are not tested by the course)
+#   - Python 3.11 (matches the Docker image; 3.9/3.10 should also work).
 #   - C/C++ build tools for numba, llvmlite, pomegranate
 #       macOS: xcode-select --install
 #       Ubuntu/Debian: sudo apt install build-essential
@@ -22,9 +22,8 @@ else
     python3 -m pip install -r requirements.in -r requirements-dev.in
 fi
 
-# Editable installs of the three sub-packages.
-# (With requirements.lock, deps are pre-resolved and pip verifies them.
-#  Without it, pip resolves the sub-package install_requires here.)
+# Editable installs of the three sub-packages. PEP 660 editable installs
+# (pip 21.3+) read from each sub-package's pyproject.toml.
 python3 -m pip install -e ./abides-core
 python3 -m pip install -e ./abides-markets
 python3 -m pip install -e ./abides-gym

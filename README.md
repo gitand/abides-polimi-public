@@ -88,25 +88,27 @@ For OS-specific troubleshooting, see the per-OS setup guide linked above.
 ### Dependency management
 
 Each sub-package (`abides-core`, `abides-markets`, `abides-gym`) declares its
-own runtime dependencies in `setup.cfg` (the `install_requires` block). Top-level
-classroom extras (JupyterLab, matplotlib) live in `requirements.in`. Dev tooling
-(pytest, mypy, sphinx, pip-tools) lives in `requirements-dev.in`.
+own runtime dependencies in its own `pyproject.toml` (PEP 621
+`[project].dependencies` block). Top-level classroom extras (JupyterLab,
+matplotlib) live in `requirements.in`. Dev tooling (pytest, mypy, sphinx)
+lives in `requirements-dev.in`. Tool config (mypy, black, isort, pytest)
+lives in the repo-level `pyproject.toml`.
 
-For reproducibility, a fully-pinned `requirements.lock` is generated from the
-three sources (`requirements.in`, `requirements-dev.in`, and the three
-sub-package `setup.cfg` files). The Docker build prefers the lockfile when it
-exists; if not, it falls back to the looser `.in` files.
+For reproducibility, a fully-pinned `requirements.lock` is generated from
+`requirements.in` + `requirements-dev.in`. The Docker build prefers the
+lockfile when it exists; if not, it falls back to the looser `.in` files.
 
 To regenerate the lockfile after changing any dependency:
 
 ```bash
-make lock     # runs pip-compile inside the container
+make lock     # runs `uv pip compile` inside the container
 git diff requirements.lock      # review
 git add requirements.lock && git commit
 ```
 
-Students who only consume the project never need to run `make lock` — they get
-the committed lockfile via `git pull` and `make build` will install from it.
+Students who only consume the project never need to run `make lock` — they
+get the committed lockfile via `git pull` and `make build` will install from
+it.
 
 
 <!-- ABOUT THE PROJECT -->

@@ -1,7 +1,15 @@
-#! /bin/python3
+"""Command-line entry point for ABIDES.
+
+Wired in via ``[project.scripts] abides = "abides_core.cli:main"`` in
+``abides-core/pyproject.toml``. Run as::
+
+    abides path/to/config.py [--key value ...]
+"""
+
+from __future__ import annotations
 
 import datetime as dt
-import importlib
+import importlib.util
 import inspect
 import logging
 import os
@@ -42,8 +50,8 @@ def load_build_config_function(config_file: str) -> Tuple[str, Callable]:
 
 
 def parse_args(args: List[str]) -> Optional[Dict[str, Union[str, bool]]]:
-    parsed_values = {}
-    key = None
+    parsed_values: Dict[str, Union[str, bool]] = {}
+    key: Optional[str] = None
     for arg in args:
         if arg.startswith("--"):
             key = arg[2:]
@@ -53,12 +61,12 @@ def parse_args(args: List[str]) -> Optional[Dict[str, Union[str, bool]]]:
             key = None
         else:
             print(colored(f"Error parsing argument: '{arg}'\n", "red"))
-            return
+            return None
 
     return parsed_values
 
 
-def main():
+def main() -> None:
     print()
     print("╔═══════════════════════════════════════════════════════════╗")
     print("║ ABIDES: Agent-Based Interactive Discrete Event Simulation ║")
@@ -85,7 +93,7 @@ def main():
         if arg not in config_args:
             print(
                 colored(
-                    f"Provided argument '{arg}' is not a parameter for the '{config_name}'' config_builder function!\n",
+                    f"Provided argument '{arg}' is not a parameter for the '{config_name}' config_builder function!\n",
                     "red",
                 )
             )
@@ -96,7 +104,6 @@ def main():
         level=config["stdout_log_level"],
         fmt="[%(process)d] %(levelname)s %(name)s %(message)s",
     )
-
 
     kernel = Kernel(
         random_state=np.random.RandomState(seed=1),
