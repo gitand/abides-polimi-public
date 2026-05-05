@@ -13,7 +13,7 @@ If you are on macOS, see [SETUP_MACOS.md](SETUP_MACOS.md) instead.
 2. Docker Desktop — runs the lab container.
 3. Git for Windows — clones the repo and gives you Git Bash, a Unix-like
    shell.
-4. (Optional) GNU make — lets you use the short `make build`, `make smoke`
+4. (Recommended) GNU make — lets you use the short `make build`, `make smoke`
    commands. You can skip this and run the longer `docker compose ...`
    commands instead; both are documented below.
 5. (Optional) Visual Studio Code with the *Dev Containers* extension —
@@ -91,7 +91,17 @@ You want to see `Default Version: 2`. If it says version 1, run
 2. Run the installer. When asked, **leave the *Use WSL 2 instead of Hyper-V*
    option ticked** (it's the default).
 3. Reboot when the installer asks.
-4. Launch Docker Desktop from the Start menu.
+4. Launch Docker Desktop from the Start menu. If you get an error message complaining that
+   "Docker Desktop must be owned by an elevated account", then try the following workaround: 
+   run PowerShell as admininistrator, then use it to delete and recreate the DockerDesktop folder by typing
+
+```powershell
+rmdir C:\ProgramData\DockerDesktop
+cd C:\ProgramData
+mkdir DockerDesktop
+```
+   If after this you still cannot launch Docker Desktop, 
+   ask the teaching team for assistance.
 5. Accept the licence agreement (it's free for personal/educational use).
 6. Wait until the whale icon in the system tray is steady (not animated).
    This means the Docker engine is running. The first start can take a
@@ -133,14 +143,14 @@ git --version
 
 ---
 
-## Step 5 — Pick a terminal and stick with it
+## Step 5 — Terminal orientation
 
-You have several terminals available:
+It's worth noting that you have several terminals available:
 
 | Terminal              | Verdict for this lab                                                |
 | --------------------- | ------------------------------------------------------------------- |
 | **Git Bash**          | Recommended. Behaves like Mac/Linux; `make` works once installed.   |
-| PowerShell            | Works. `make` needs to be installed separately.                     |
+| PowerShell            | Works and may be needed for certain side activities. `make` needs to be installed separately.             |
 | Command Prompt        | Avoid — quoting and path semantics differ from the recipes.         |
 | WSL2 Ubuntu shell     | Overkill and confusing — Docker Desktop uses WSL2 internally, but you don't need to drop into it for this lab. |
 
@@ -148,11 +158,10 @@ For the rest of this guide, commands shown are for **Git Bash**.
 
 ---
 
-## Step 6 — (Optional) Install GNU make
+## Step 6 — (Recommended) Install GNU make
 
 The Makefile gives you short commands like `make build` and `make smoke`. If
-you can't or don't want to install make, jump to the alternative table at the
-bottom of this section — every `make` target maps to a single
+you can't install make, jump to Option B — every `make` target maps to a single
 `docker compose` command you can run directly.
 
 **Option A — winget (Windows 10 1709+ or Windows 11):**
@@ -164,15 +173,29 @@ winget install --id GnuWin32.Make
 You may need to restart your terminal afterward so it picks up the new
 `PATH`. Verify with `make --version`.
 
-**Option B — Chocolatey:**
+If git bash still cannot find `make`, you may have to add manually the path
+to its location. For instance, winget may have installed `make` in 
+`C:\Program Files (x86)\GnuWin32\bin\`
+In this case (check first if `make` is actually there),
+create a local bash configuration script `~/.bashrc` in your 
+user `$HOME` folder containing the following line:
 
-```powershell
-choco install make
+```bash
+   export PATH="$PATH:/c/Program Files (x86)/GnuWin32/bin"
+```
+You can do this for instance with a heredoc (or with your favourite text editor):
+
+```bash
+   cd $HOME
+   cat > .bashrc << 'EOF'
+   export PATH="$PATH:/c/Program Files (x86)/GnuWin32/bin"
+   EOF
 ```
 
-(Requires Chocolatey to be installed first — see <https://chocolatey.org/install>.)
+Restart the git bash terminal before trying again `make --version`.
 
-**Option C — skip `make` entirely.** Use this table:
+
+**Option B — skip `make`.** Use this table:
 
 | Instead of...      | Run this directly                                              |
 | ------------------ | -------------------------------------------------------------- |
