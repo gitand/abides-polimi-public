@@ -635,6 +635,10 @@ class Kernel:
         if requested_time is None:
             requested_time = self.current_time + 1
 
+        # Wake-up times must be integer nanosecond timestamps; a float here
+        # would propagate through the event queue into agents' current_time.
+        requested_time = int(requested_time)
+
         if self.current_time and (requested_time < self.current_time):
             raise ValueError(
                 "set_wakeup() called with requested time not in future",

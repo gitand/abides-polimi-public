@@ -72,7 +72,11 @@ def get_wake_time(open_time, close_time, a=0, b=1):
     random_multiplier = u_quadratic_inverse_cdf(uniform_0_1)
     wake_time = open_time + random_multiplier * (close_time - open_time)
 
-    return wake_time
+    # Wake-up times are nanosecond timestamps and must be integers.  A float
+    # here would leak through set_wakeup() into the kernel event queue and
+    # contaminate downstream message timestamps (parse_logs_df then records
+    # those events with EventTime == 0).
+    return int(wake_time)
 
 
 def fmt_ts(timestamp: NanosecondTime) -> str:

@@ -20,7 +20,7 @@ DC := docker compose
 
 .DEFAULT_GOAL := help
 
-.PHONY: help build up down logs shell test smoke clean rebuild lock
+.PHONY: help build up down logs shell test smoke tournament clean rebuild lock
 
 help:  ## Show this help.
 	@grep -E '^[a-zA-Z_-]+:.*?##' $(MAKEFILE_LIST) | \
@@ -49,6 +49,11 @@ test:  ## Run the pytest suite inside the container.
 
 smoke:  ## Run the 5-minute RMSC04 smoke test inside the container.
 	$(DC) run --rm abides python tools/smoke_test.py
+
+tournament:  ## Run the class tournament (full day). Override: make tournament SEED=123 END_TIME=10:00:00
+	$(DC) run --rm abides python tools/run_tournament.py \
+		--seed $(or $(SEED),42) \
+		--end-time $(or $(END_TIME),17:30:00)
 
 lock:  ## Regenerate requirements.lock from the *.in files. Commit the result.
 	$(DC) run --rm abides \

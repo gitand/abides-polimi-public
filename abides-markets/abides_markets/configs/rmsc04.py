@@ -31,7 +31,7 @@ from abides_markets.utils import generate_latency_model
 def build_config(
     seed=int(datetime.now().timestamp() * 1_000_000) % (2**32 - 1),
     date="20210205",
-    end_time="10:00:00",
+    end_time="17:30:00",
     stdout_log_level="INFO",
     ticker="ABM",
     starting_cash=10_000_000,  # Cash in this simulator is always in CENTS.
@@ -117,7 +117,7 @@ def build_config(
     MKT_CLOSE = DATE + str_to_ns(end_time)
     # These times needed for distribution of arrival times of Noise Agents
     NOISE_MKT_OPEN = MKT_OPEN - str_to_ns("00:30:00")
-    NOISE_MKT_CLOSE = DATE + str_to_ns("16:00:00")
+    NOISE_MKT_CLOSE = DATE + str_to_ns("17:30:00")
 
     # oracle
     symbols = {
