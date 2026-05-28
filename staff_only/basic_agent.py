@@ -105,7 +105,7 @@ class BasicAgent(TradingAgent):
         self.place_market_order(
             symbol=self.symbol,
             quantity=self.order_size,
-            side=Side.BID,
+            side=Side.ASK,
         )
         self.has_traded = True
         self.state = "DONE"
